@@ -16,7 +16,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: pip install mlflow sklearn pandas scikit-learn
+        run: pip install mlflow scikit-learn pandas
 
       # --- LE QUALITY GATE ---
       - name: Run Quality Gate
