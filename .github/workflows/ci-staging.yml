@@ -1,4 +1,13 @@
-steps:
+name: CD Staging
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -9,7 +18,6 @@ steps:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Cette étape transforme "Yannos95" en "yannos95"
       - name: Lowercase repo name
         run: |
           echo "REPO_LC=${GITHUB_REPOSITORY_OWNER,,}" >> ${GITHUB_ENV}
@@ -19,5 +27,4 @@ steps:
         with:
           context: .
           push: true
-          # On utilise maintenant env.REPO_LC qui est en minuscules
           tags: ghcr.io/${{ env.REPO_LC }}/iris-app:staging
