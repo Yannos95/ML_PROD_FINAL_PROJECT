@@ -19,7 +19,7 @@ def validate_iris_input(data_dict: dict):
 
 def get_app_info():
     """Information système isolée (Unit Testable)"""
-    return {"name": "Iris Prediction Service", "stage": "Production"}
+    return {"app_name": "Iris-ML-Prod", "stage": "Production"}
 
 # Configuration DagsHub
 os.environ['MLFLOW_TRACKING_USERNAME'] = "Yannos95"
