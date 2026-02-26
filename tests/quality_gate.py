@@ -18,7 +18,7 @@ def test_and_promote_model():
     try:
         model = mlflow.sklearn.load_model(model_uri)
     except Exception as e:
-        print(f"❌ Impossible de charger le modèle en Staging: {e}")
+        print(f" Impossible de charger le modèle en Staging: {e}")
         raise
 
     # 3. Charger les données pour le test de performance (Quality Gate)
@@ -28,14 +28,14 @@ def test_and_promote_model():
     # 4. Exécuter la prédiction et calculer l'accuracy
     predictions = model.predict(X)
     acc = accuracy_score(y, predictions)
-    print(f"📊 Accuracy du modèle en Staging: {acc}")
+    print(f" Accuracy du modèle en Staging: {acc}")
     
     # --- LE QUALITY GATE ---
     if acc < 0.8:
         print("❌ Échec du Quality Gate: Accuracy insuffisante.")
         raise Exception(f"Accuracy too low ({acc}). Promotion rejected!")
     
-    print("✅ Quality Gate passé avec succès!")
+    print(" Quality Gate passé avec succès!")
 
     # --- PROMOTION AUTOMATIQUE (Exigence Projet) ---
     # Récupérer le numéro de version exact du modèle qui est en Staging
@@ -45,7 +45,7 @@ def test_and_promote_model():
     
     staging_version = latest_versions[0].version
     
-    print(f"🚀 Promotion de la version {staging_version} vers le stage 'Production'...")
+    print(f" Promotion de la version {staging_version} vers le stage 'Production'...")
     
     # Basculer la version vers Production et archiver l'ancienne version de Prod
     client.transition_model_version_stage(
@@ -55,7 +55,7 @@ def test_and_promote_model():
         archive_existing_versions=True
     )
     
-    print(f"🏆 Succès! Le modèle {model_name} v{staging_version} est maintenant en Production.")
+    print(f" Succès! Le modèle {model_name} v{staging_version} est maintenant en Production.")
 
 if __name__ == "__main__":
     test_and_promote_model()
