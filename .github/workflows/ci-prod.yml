@@ -8,7 +8,8 @@ jobs:
   quality-check-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -16,13 +17,20 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: pip install mlflow scikit-learn pandas
+        run: |
+          pip install -r requirements.txt
+          pip install mlflow scikit-learn pandas
 
-      # --- LE QUALITY GATE ---
+      # --- LE QUALITY GATE (Guard Gate obligatoire pour la Prod) ---
       - name: Run Quality Gate
+        env:
+          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TOKEN }}
+          MLFLOW_TRACKING_URI: https://dagshub.com/Yannos95/MLOps-Final-Project.mlflow
+          PYTHONPATH: .
         run: python tests/quality_gate.py
 
-      # --- SI LE GATE PASSE, ON BUILD ---
+      # --- SI LE GATE PASSE (Success), ON BUILD & PUSH ---
       - name: Login to GHCR
         if: success()
         uses: docker/login-action@v2

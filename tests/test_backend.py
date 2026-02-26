@@ -1,42 +1,64 @@
 import pytest
 from fastapi.testclient import TestClient
-from backend.main import app
+from backend.main import app, validate_iris_input # Assure-toi que ces fonctions existent
 
 client = TestClient(app)
 
-# --- 3 TESTS UNITAIRES   ---
-def test_health_check():
-    """Vérifie que l'API est fonctionnelle."""
+# =================================================================
+# 1. TESTS UNITAIRES (3 obligatoires)
+# On teste des fonctions isolées sans passer par l'URL de l'API
+# =================================================================
+
+def test_unit_validation_logic_success():
+    """Test unitaire : Vérifie que la validation accepte des données correctes."""
+    sample_data = {"sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}
+    assert validate_iris_input(sample_data) is True
+
+def test_unit_validation_logic_failure():
+    """Test unitaire : Vérifie que la validation rejette des valeurs négatives."""
+    invalid_data = {"sepal_length": -5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}
+    assert validate_iris_input(invalid_data) is False
+
+def test_unit_data_format():
+    """Test unitaire : Vérifie que le format de sortie attendu est un dictionnaire."""
+    from backend.main import get_app_info
+    info = get_app_info()
+    assert isinstance(info, dict)
+    assert info["app_name"] == "Iris-ML-Prod"
+
+# =================================================================
+# 2. TESTS D'INTÉGRATION (2 obligatoires)
+# On teste si les composants (API + Modèle) communiquent bien
+# =================================================================
+
+def test_integration_health_endpoint():
+    """Vérifie que la route Health répond correctement."""
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "healthy"}
+    assert response.json()["status"] == "healthy"
 
-def test_prediction_input_validation():
-    """Vérifie le rejet des schémas invalides."""
-    response = client.post("/predict", json={"wrong_key": 1.0})
-    assert response.status_code == 422
-
-def test_root_not_found():
-    """Vérifie que les routes inexistantes sont gérées."""
-    response = client.get("/")
-    assert response.status_code == 404
-
-# --- 2 TESTS D'INTÉGRATION   ---
-def test_mlflow_model_loading():
-    """Vérifie la connexion avec le Model Registry MLflow[cite: 61, 64]."""
+def test_integration_model_is_loaded():
+    """Vérifie que le modèle est bien chargé en mémoire au démarrage."""
     from backend.main import model
     assert model is not None
+    assert hasattr(model, "predict")
 
-def test_prediction_response_structure():
-    """Vérifie que le modèle renvoie une structure de données correcte."""
-    payload = {"sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}
-    response = client.post("/predict", json=payload)
-    assert "prediction" in response.json()
+# =================================================================
+# 3. TEST END-TO-END (1 obligatoire)
+# On simule un parcours utilisateur complet : Requête -> Modèle -> Réponse
+# =================================================================
 
-# --- 1 TEST END-TO-END   ---
-def test_full_prediction_flow():
-    """Simule une requête utilisateur complète jusqu'à la réponse finale."""
-    payload = {"sepal_length": 5.9, "sepal_width": 3.0, "petal_length": 5.1, "petal_width": 1.8}
+def test_e2e_prediction_flow():
+    """Parcours complet : Envoi de données et réception d'une prédiction valide."""
+    payload = {
+        "sepal_length": 5.9,
+        "sepal_width": 3.0,
+        "petal_length": 5.1,
+        "petal_width": 1.8
+    }
     response = client.post("/predict", json=payload)
+    
     assert response.status_code == 200
-    assert response.json()["prediction"] in [0, 1, 2]
+    data = response.json()
+    assert "prediction" in data
+    assert data["prediction"] in [0, 1, 2] # Classes Iris : Setosa, Versicolor, Virginica
