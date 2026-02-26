@@ -12,8 +12,10 @@ os.environ['MLFLOW_TRACKING_PASSWORD'] = "c38f0b2ddfa9b0dce8f328d74fd315a06a9864
 mlflow.set_tracking_uri("https://dagshub.com/Yannos95/MLOps-Final-Project.mlflow")
 
 MODEL_NAME = "IrisLogisticModel"
-model_uri = f"models:/{MODEL_NAME}/1" 
 
+MODEL_STAGE = "Production"
+
+model_uri = f"models:/{MODEL_NAME}/{MODEL_STAGE}"
 try:
     
     model = mlflow.sklearn.load_model(model_uri)
