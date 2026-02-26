@@ -49,4 +49,4 @@ with mlflow.start_run():
     mlflow.sklearn.log_model(model, "model", registered_model_name="IrisLogisticModel")
 
     print(f"Modèle entraîné avec une accuracy de : {accuracy}")
-    #
+    # 
