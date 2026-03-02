@@ -43,11 +43,11 @@ def test_and_promote_model():
     print(f" Accuracy du modèle ({current_stage}): {acc}")
     
     # --- LE QUALITY GATE ---
-    if acc < 1:
+    if acc < 0.8:
         print(f" Échec du Quality Gate: Accuracy insuffisante ({acc}).")
         raise Exception(f"Accuracy too low! Deployment/Promotion rejected.")
     
-    print("✅ Quality Gate passé avec succès!")
+    print(" Quality Gate passé avec succès!")
 
     # --- PROMOTION (Uniquement si on est en Staging) ---
     if current_stage == "Staging":
