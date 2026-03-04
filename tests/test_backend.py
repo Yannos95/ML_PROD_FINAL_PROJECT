@@ -5,8 +5,7 @@ from backend.main import app, validate_iris_input # Assure-toi que ces fonctions
 client = TestClient(app)
 
 # =================================================================
-# 1. TESTS UNITAIRES (3 obligatoires)
-# On teste des fonctions isolées sans passer par l'URL de l'API
+# 1. TESTS UNITAIRES
 # =================================================================
 
 def test_unit_validation_logic_success():
@@ -27,8 +26,7 @@ def test_unit_data_format():
     assert info["app_name"] == "Iris-ML-Prod"
 
 # =================================================================
-# 2. TESTS D'INTÉGRATION (2 obligatoires)
-# On teste si les composants (API + Modèle) communiquent bien
+# 2. TESTS D'INTÉGRATION
 # =================================================================
 
 def test_integration_health_endpoint():
