@@ -44,12 +44,11 @@ def test_integration_model_is_loaded():
     assert hasattr(model, "predict")
 
 # =================================================================
-# 3. TEST END-TO-END (1 obligatoire)
-# On simule un parcours utilisateur complet : Requête -> Modèle -> Réponse
+# 3. TEST END-TO-END 
 # =================================================================
 
 def test_e2e_prediction_flow():
-    """Parcours complet : Envoi de données et réception d'une prédiction valide."""
+    
     payload = {
         "sepal_length": 5.9,
         "sepal_width": 3.0,

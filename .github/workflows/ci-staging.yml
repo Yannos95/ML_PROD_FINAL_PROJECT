@@ -29,14 +29,6 @@ jobs:
         run: |
           pytest tests/test_backend.py
 
-      # --- ÉTAPE CRUCIALE : QUALITY GATE & PROMOTION ---
-      - name: Run Quality Gate & Model Promotion
-        env:
-          MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_USERNAME }}
-          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TOKEN }}
-          MLFLOW_TRACKING_URI: https://dagshub.com/Yannos95/MLOps-Final-Project.mlflow
-        run: python tests/quality_gate.py  
-
       - name: Login to GHCR
         if: success()
         uses: docker/login-action@v2

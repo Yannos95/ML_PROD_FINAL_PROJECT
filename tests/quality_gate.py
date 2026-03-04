@@ -14,7 +14,6 @@ def test_and_promote_model():
     model_name = "IrisLogisticModel"
 
     # 2. Déterminer quel modèle tester (Staging ou Production)
-    # On essaie d'abord Staging (pour la promotion)
     current_stage = "Staging"
     model_uri = f"models:/{model_name}/{current_stage}"
     
@@ -22,7 +21,6 @@ def test_and_promote_model():
         model = mlflow.sklearn.load_model(model_uri)
         print(f" Modèle chargé depuis le stage: {current_stage}")
     except Exception:
-        # Si pas de Staging, on vérifie la Production (cas du pipeline Main)
         print(f"ℹ Aucun modèle en {current_stage}. Tentative en Production...")
         current_stage = "Production"
         model_uri = f"models:/{model_name}/{current_stage}"
@@ -47,7 +45,7 @@ def test_and_promote_model():
         print(f" Échec du Quality Gate: Accuracy insuffisante ({acc}).")
         raise Exception(f"Accuracy too low! Deployment/Promotion rejected.")
     
-    print("✅ Quality Gate passé avec succès!")
+    print(" Quality Gate passé avec succès!")
 
     # --- PROMOTION (Uniquement si on est en Staging) ---
     if current_stage == "Staging":

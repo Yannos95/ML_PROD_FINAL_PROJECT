@@ -21,8 +21,8 @@ jobs:
           pip install -r requirements.txt
           pip install mlflow scikit-learn pandas
 
-      # --- LE QUALITY GATE (Guard Gate obligatoire pour la Prod) ---
-      - name: Run Quality Gate
+      # --- LE QUALITY GATE (Promotion réelle ici) ---
+      - name: Run Quality Gate & Promotion
         env:
           MLFLOW_TRACKING_USERNAME: ${{ secrets.MLFLOW_USERNAME }}
           MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TOKEN }}
@@ -30,7 +30,7 @@ jobs:
           PYTHONPATH: .
         run: python tests/quality_gate.py
 
-      # --- SI LE GATE PASSE (Success), ON BUILD & PUSH ---
+      # --- SI LE GATE PASSE, ON DEPLOIE ---
       - name: Login to GHCR
         if: success()
         uses: docker/login-action@v2
